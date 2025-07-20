@@ -1,0 +1,3215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Trampo é Empreender Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        /* Variáveis de Cores */
+        :root {
+            --color-primary: #00796B; /* Azul-petróleo */
+            --color-secondary: #FFC107; /* Amarelo */
+            --color-accent: #FF9800; /* Laranja para destaque */
+            --color-background-light: #E0F2F1; /* Fundo mais claro */
+            --color-text-dark: #263238; /* Texto escuro */
+            --color-text-light: #FFFFFF; /* Texto claro */
+            --color-card-bg: rgba(255, 255, 255, 0.95);
+            --color-form-section-bg: rgba(255, 255, 255, 0.8);
+            --color-border: rgba(0, 121, 107, 0.2);
+            --color-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-background-light) 100%);
+            color: var(--color-text-dark);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            /* Estilos para a imagem de fundo (agora controlada apenas pelo JS se houver) */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Para que a imagem de fundo não role com o conteúdo */
+        }
+
+        /* Formas de Fundo */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(80px);
+        }
+
+        body::before {
+            width: 600px;
+            height: 600px;
+            background: var(--color-secondary);
+            top: -100px;
+            left: -150px;
+        }
+
+        body::after {
+            width: 800px;
+            height: 800px;
+            background: var(--color-accent);
+            bottom: -200px;
+            right: -250px;
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--color-card-bg);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px var(--color-shadow);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--color-border);
+        }
+
+        /* Cabeçalho */
+        .header {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: var(--color-background-light);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Pseudo-elementos do cabeçalho com transparência */
+        .header::before {
+            content: '💡'; /* Ícone de lâmpada */
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 80px;
+            opacity: 0.08; /* Mais transparente */
+            transform: rotate(-20deg);
+        }
+
+        .header::after {
+            content: '🚀'; /* Ícone de foguete */
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 80px;
+            opacity: 0.08; /* Mais transparente */
+            transform: rotate(30deg);
+        }
+
+        .header h1 {
+            font-family: 'Fredoka', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 10px;
+            color: var(--color-text-dark);
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            margin-top: 15px;
+            opacity: 0.8;
+            font-style: italic;
+            background: rgba(0, 121, 107, 0.05);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            color: var(--color-primary);
+        }
+
+        /* Logo do Usuário */
+        #userLogo {
+            max-width: 150px;
+            max-height: 150px;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Navegação por Abas */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+
+        .tab-btn {
+            background: var(--color-background-light);
+            color: var(--color-primary);
+            padding: 14px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: var(--color-secondary);
+            color: var(--color-text-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .tab-btn.active {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(0, 121, 107, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Conteúdo das Abas */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--color-card-bg);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 40px var(--color-shadow);
+            border: 1px solid var(--color-border);
+        }
+
+        .card h2 {
+            font-family: 'Fredoka', cursive;
+            color: var(--color-primary);
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card p {
+            color: var(--color-text-dark);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .methodology-badge {
+            background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
+            color: var(--color-primary);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: auto;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Grid de Formulário */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-section {
+            background: var(--color-form-section-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 5px solid var(--color-primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .form-section h3 {
+            font-family: 'Fredoka', cursive;
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--color-text-light);
+            font-weight: 500;
+            color: var(--color-text-dark);
+        }
+
+        /* Placeholder mais claro */
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(38, 50, 56, 0.6); /* Cor mais clara para o placeholder */
+        }
+
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+        }
+
+        /* Input com Ícone */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon input {
+            padding-left: 45px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-primary);
+            font-size: 1.1rem;
+        }
+
+        /* Botões */
+        .btn {
+            background: linear-gradient(135deg, var(--color-primary), #004D40);
+            color: var(--color-text-light);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 121, 107, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 121, 107, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+            color: var(--color-text-dark);
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #D32F2F, #F44336);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-danger:hover {
+            box_shadow: 0 8px 20px rgba(211, 47, 47, 0.5);
+        }
+
+        /* Resultado da Calculadora */
+        .result-card {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: var(--color-text-light);
+            padding: 35px;
+            border-radius: 25px;
+            text-align: center;
+            margin-top: 25px;
+            box-shadow: 0 15px 40px rgba(0, 121, 107, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-price {
+            font-family: 'Fredoka', cursive;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calculation-breakdown {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calculation-breakdown h4 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-light);
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+            color: var(--color-text-dark);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3);
+        }
+
+        .highlight-box h3 {
+            font-family: 'Fredoka', cursive;
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        /* REMOVIDO: .calculation-steps */
+
+        /* Listas de Itens (Produtos, Vendas, Clientes, Estoque) */
+        .item-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px; /* Espaço para a barra de rolagem */
+        }
+
+        .item {
+            background: var(--color-form-section-bg);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--color-secondary);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .item-info {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .item-detail {
+            color: var(--color-text-dark);
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 15px;
+        }
+
+        /* Estilos para o colapsável de preço por quantidade */
+        .collapsible-header {
+            background: var(--color-background-light);
+            color: var(--color-primary);
+            padding: 15px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .collapsible-header:hover {
+            background: var(--color-secondary);
+            color: var(--color-text-dark);
+        }
+
+        .collapsible-content {
+            background: var(--color-form-section-bg);
+            padding: 0 20px; /* Padding vertical 0 para a transição */
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            border-radius: 0 0 20px 20px;
+            border-left: 5px solid var(--color-primary);
+            border-right: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .collapsible-content.expanded {
+            max-height: 500px; /* Valor grande o suficiente para o conteúdo */
+            padding: 20px;
+        }
+
+        /* Dashboard */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--color-primary), #004D40);
+            color: var(--color-text-light);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 121, 107, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-family: 'Fredoka', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Dicas */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+            color: var(--color-text-dark);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 193, 7, 0.5);
+        }
+
+        .tip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tip-title {
+            font-family: 'Fredoka', cursive;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tip-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--color-primary);
+            padding: 60px;
+            font-style: italic;
+            font-size: 1.1rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        /* Mensagens de Alerta/Sucesso */
+        .message-box {
+            background: linear-gradient(135deg, #FF6F00, #FF8F00);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(255, 111, 0, 0.2);
+            text-align: center;
+            display: none; /* Escondido por padrão */
+        }
+
+        .message-box.success {
+            background: linear-gradient(135deg, #388E3C, #4CAF50);
+        }
+
+        .message-box.error {
+            background: linear-gradient(135deg, #D32F2F, #F44336);
+        }
+
+        /* Estilos para o Login */
+        #auth-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Ajustado para cobrir a tela inteira */
+            width: 100%; /* Adicionado para ocupar toda a largura */
+        }
+
+        #login-section, #register-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+        }
+
+        #login-section .card, #register-section .card {
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        #login-section h2, #register-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        #login-section .form-group, #register-section .form-group {
+            margin-bottom: 25px;
+        }
+
+        #login-section .btn, #register-section .btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+        }
+
+        .login-toggle-text {
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: var(--color-text-dark);
+        }
+
+        .login-toggle-text a {
+            color: var(--color-primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .login-toggle-text a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                border-radius: 20px;
+            }
+
+            .header h1 {
+                font-size: 2.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .nav-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 15px;
+                -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+                min-width: fit-content;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .card {
+                padding: 25px;
+                border-radius: 20px;
+            }
+
+            .card h2 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .form-section {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .form-section h3 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+
+            .form-group input, .form-group select, .form-group textarea {
+                padding: 12px;
+                font-size: 0.95rem;
+            }
+
+            .btn {
+                padding: 14px 25px;
+                font-size: 0.95rem;
+                width: auto; /* Permite que os botões se ajustem melhor em telas pequenas */
+            }
+
+            .result-price {
+                font-size: 2.5rem;
+            }
+
+            .result-subtitle {
+                font-size: 1rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .item-info {
+                margin-bottom: 10px;
+            }
+
+            .item-name {
+                font-size: 1rem;
+            }
+
+            .item-detail {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="auth-section">
+        <div id="login-section" style="display: none;">
+            <div class="card">
+                <h2>Login 🔑</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="loginEmail" placeholder="Digite aqui...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="loginPassword" placeholder="Digite aqui...">
+                    </div>
+                </div>
+                <button class="btn" onclick="loginUser()">Entrar</button>
+                <p class="login-toggle-text">Não tem uma conta? <a href="#" onclick="showRegister()">Cadastre-se</a></p>
+            </div>
+        </div>
+
+        <div id="register-section" style="display: none;">
+            <div class="card">
+                <h2>Cadastre-se 🎉</h2>
+                <div class="form-group">
+                    <label for="registerName">Nome</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="registerName" placeholder="Digite aqui...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="registerEmail" placeholder="Digite aqui...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Senha</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="registerPassword" placeholder="Digite aqui...">
+                    </div>
+                </div>
+                <button class="btn" onclick="registerUser()">Registrar</button>
+                <p class="login-toggle-text">Já tem uma conta? <a href="#" onclick="showLogin()">Fazer Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <div class="container" id="app-content" style="display: none;">
+        <header class="header">
+            <img id="userLogo" src="" alt="Logo da Marca" style="display: none;">
+            <h1>💡 Meu Trampo é Empreender</h1>
+            <p>Calculadora Completa de Precificação Profissional</p>
+            <p class="subtitle">Baseada na Metodologia Oficial - Precifique com Precisão e Aumente seus Lucros</p>
+            <p style="font-size: 0.9rem; margin-top: 15px; color: var(--color-primary);">Bem-vindo(a), <span id="userNameDisplay" style="font-weight: 600;"></span>! <button class="btn-secondary" style="padding: 5px 10px; font-size: 0.8rem; margin-left: 10px;" onclick="logoutUser()">Sair</button></p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="showTab('calculadora')">🧮 Calculadora</button>
+            <button class="tab-btn" onclick="showTab('vendas')">💰 Vendas</button>
+            <button class="tab-btn" onclick="showTab('produtos')">📦 Produtos</button>
+            <button class="tab-btn" onclick="showTab('clientes')">👥 Clientes</button>
+            <button class="tab-btn" onclick="showTab('estoque')">📦 Estoque</button>
+            <button class="tab-btn" onclick="showTab('dicas')">💡 Dicas</button>
+            <button class="tab-btn" onclick="showTab('configuracoes')">⚙️ Configurações</button>
+        </nav>
+
+        <div id="calculadora" class="tab-content">
+            <div class="card">
+                <h2>🧮 Calculadora Meu Trampo é Empreender <span class="methodology-badge">Metodologia Oficial</span></h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Esta calculadora segue a metodologia ensinada no projeto "Meu Trampo é Empreender". Inclui TODOS os custos reais do seu negócio para uma precificação justa e lucrativa.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>🏠 Custos Fixos Mensais</h3>
+                        <p style="margin-bottom: 15px; color: var(--color-text-dark); font-size: 0.85rem; font-style: italic;">
+                            Gastos que você tem TODO MÊS, independente de quantos produtos vende.
+                        </p>
+                        <div id="custosFixosContainer">
+                            </div>
+                        <button class="btn btn-secondary" onclick="addDynamicCost('fixo')">➕ Adicionar Custo Fixo</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>🥚 Custos Variáveis (por unidade)</h3>
+                        <p style="margin-bottom: 15px; color: var(--color-text-dark); font-size: 0.85rem; font-style: italic;">
+                            Quanto você gasta para fazer 1 produto (ingredientes, embalagem, etc.).
+                        </p>
+                        <div id="custosVariaveisContainer">
+                            </div>
+                        <button class="btn btn-secondary" onclick="addDynamicCost('variavel')">➕ Adicionar Custo Variável</button>
+
+                        <div style="background: rgba(0, 121, 107, 0.05); padding: 15px; border-radius: 15px; margin-top: 20px;">
+                            <h4 style="color: var(--color-primary); margin-bottom: 15px; font-size: 1.2rem;">Adicionar Produto ao Controle</h4>
+                            <div class="form-group">
+                                <label for="calcProdutoNome">Nome do Produto</label>
+                                <div class="input-with-icon">
+                                    <span class="input-icon">🏷️</span>
+                                    <input type="text" id="calcProdutoNome" placeholder="Digite aqui...">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="calcProdutoEstoqueInicial">Quantidade Desejada (Estoque Inicial)</label>
+                                <div class="input-with-icon">
+                                    <span class="input-icon">📦</span>
+                                    <input type="number" id="calcProdutoEstoqueInicial" placeholder="Digite aqui...">
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" onclick="addProdutoFromCalculadora()">Adicionar ao Controle de Produtos 📦</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>⏱️ Sua Produção e Trabalho</h3>
+                        <p style="margin-bottom: 15px; color: var(--color-text-dark); font-size: 0.85rem; font-style: italic;">
+                            Informações sobre quanto você produz e trabalha.
+                        </p>
+                        <div class="form-group">
+                            <label for="salarioDesejado">Quanto você quer ganhar por mês? (R$)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💰</span>
+                                <input type="number" id="salarioDesejado" step="0.01" placeholder="Digite aqui...">
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--color-text-dark); font-style: italic; margin-top: 5px;">
+                                Esse valor já considera os custos fixos!
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label for="produtosPorHora">Quantos produtos você faz por hora?</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">⏱️</span>
+                                <input type="number" id="produtosPorHora" step="0.1" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="diasPorMes">Quantos dias por mês você pretende trabalhar?</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📅</span>
+                                <input type="number" id="diasPorMes" placeholder="Digite aqui...">
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--color-text-dark); font-style: italic; margin-top: 5px;">
+                                22 dias por mês já considera uma jornada de segunda a sexta, ou seja, sem trabalhar aos finais de semana.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label for="horasDia">Quantas horas por dia você trabalha?</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">⏰</span>
+                                <input type="number" id="horasDia" step="0.5" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="unidadesMes">Quantos produtos você consegue fazer por mês? (Estimado)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📊</span>
+                                <input type="text" id="unidadesMes" readonly placeholder="Calculado automaticamente">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>📈 Impostos e Margem de Lucro</h3>
+                        <p style="margin-bottom: 15px; color: var(--color-text-dark); font-size: 0.85rem; font-style: italic;">
+                            Valores percentuais para impostos e lucro adicional.
+                        </p>
+                        <div class="form-group">
+                            <label for="impostos">Impostos (%) - MEI = 6%</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🏛️</span>
+                                <input type="number" id="impostos" step="0.01" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="comissaoVenda">Taxa de Vendas/Comissão (%)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🤝</span>
+                                <input type="number" id="comissaoVenda" step="0.01" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="margemLucro">Margem de Lucro Desejada (%)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💲</span>
+                                <input type="number" id="margemLucro" step="0.01" placeholder="Digite aqui...">
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--color-text-dark); font-style: italic; margin-top: 5px;">
+                                100% de lucro = dobrar o custo (2x o custo total).<br>
+                                200% de lucro = triplicar o custo (3x o custo total).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="btn" onclick="calcularPreco()">Calcular Preço Final 🚀</button>
+                    <button class="btn btn-danger" onclick="limparCalculadora()">Limpar Calculadora 🧹</button>
+                </div>
+
+                <div id="resultado-calculadora" class="result-card" style="display: none;">
+                    <h3 class="result-subtitle">Seu preço de venda sugerido (por unidade) é:</h3>
+                    <div class="result-price" id="precoFinal">R$ 0,00</div>
+                    <p class="result-subtitle">Para ter lucro e cobrir todos os seus custos!</p>
+
+                    <div class="calculation-breakdown">
+                        <h4>Detalhes do Cálculo</h4>
+                        <div class="breakdown-item">
+                            <span>Custos Fixos por Unidade:</span>
+                            <span id="custoFixoUnitarioDetalhe">R$ 0,00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Custo Variável por Unidade:</span>
+                            <span id="custoVariavelUnitarioDetalhe">R$ 0,00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Custo da Sua Hora de Trabalho (por produto):</span>
+                            <span id="custoHoraTrabalhoDetalhe">R$ 0,00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Total de Custos por Unidade:</span>
+                            <span id="totalCustosUnitarioDetalhe">R$ 0,00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Valor para Impostos (p/ unidade):</span>
+                            <span id="valorImpostosDetalhe">R$ 0,00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Valor para Taxa de Venda/Comissão (p/ unidade):</span>
+                            <span id="valorComissaoDetalhe">R$ 0,00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Valor para Margem de Lucro (p/ unidade):</span>
+                            <span id="valorLucroDetalhe">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>Dica Importante: Ponto de Equilíbrio 🎯</h3>
+                        <p id="pontoEquilibrioInfo">Para cobrir todos os seus custos fixos e seu salário desejado, você precisa vender no mínimo <strong id="qtdPontoEquilibrio">0</strong> unidades deste produto por mês, a <strong id="precoPontoEquilibrio">R$ 0,00</strong> cada (considerando apenas custos e salário, sem lucro, impostos ou comissão).</p>
+                    </div>
+
+                    <!-- Nova seção para preço por quantidade -->
+                    <div class="collapsible-header" onclick="toggleCollapsible('precoPorQuantidadeSection')">
+                        <span>Ver preço por quantidade 🧾</span>
+                        <span>▼</span>
+                    </div>
+                    <div id="precoPorQuantidadeSection" class="collapsible-content">
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="quantidadeDesejada">Quantidade Desejada</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔢</span>
+                                <input type="number" id="quantidadeDesejada" placeholder="Digite aqui..." value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lucroPorQuantidade">Margem de Lucro para Quantidade (%)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💲</span>
+                                <input type="number" id="lucroPorQuantidade" placeholder="Digite aqui..." value="0">
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--color-text-dark); font-style: italic; margin-top: 5px;">
+                                100% de lucro = dobrar o custo (2x o custo total).<br>
+                                200% de lucro = triplicar o custo (3x o custo total).
+                            </p>
+                        </div>
+                        <button class="btn" onclick="calcularPrecoPorQuantidade()">Calcular Preço por Quantidade</button>
+
+                        <div id="resultado-quantidade" style="margin-top: 20px; display: none;">
+                            <div class="breakdown-item">
+                                <span>Custo Total da Quantidade:</span>
+                                <span id="custoTotalQuantidade">R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Preço Total Sugerido (com lucro):</span>
+                                <span id="precoTotalQuantidade">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Prévia dos Custos -->
+            <div class="card" style="margin-top: 25px;">
+                <h2>Sumário de Custos</h2>
+                <div class="breakdown-item">
+                    <span>Custo Fixo Total Mensal:</span>
+                    <span id="previewCustoFixoTotal">R$ 0,00</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Custo Variável Total por Unidade:</span>
+                    <span id="previewCustoVariavelTotalUnitario">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="produtos" class="tab-content">
+            <div class="card">
+                <h2>📦 Gerenciamento de Produtos</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Cadastre seus produtos, seus custos e preços de venda.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Adicionar Novo Produto (Detalhado)</h3>
+                        <div class="form-group">
+                            <label for="produtoNome">Nome do Produto</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🏷️</span>
+                                <input type="text" id="produtoNome" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="produtoPrecoCusto">Custo de Produção (R$)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💸</span>
+                                <input type="number" id="produtoPrecoCusto" step="0.01" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="produtoPrecoVenda">Preço de Venda Sugerido (R$)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">💲</span>
+                                <input type="number" id="produtoPrecoVenda" step="0.01" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="produtoEstoqueInicial">Estoque Inicial</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📦</span>
+                                <input type="number" id="produtoEstoqueInicial" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="adicionarProduto()">Adicionar Produto ✨</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Lista de Produtos</h3>
+                        <div id="lista-produtos" class="item-list">
+                            <p class="empty-state">Nenhum produto cadastrado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vendas" class="tab-content">
+            <div class="card">
+                <h2>💰 Gerenciamento de Vendas</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Registre suas vendas e acompanhe seu faturamento.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Registrar Nova Venda</h3>
+                        <div class="form-group">
+                            <label for="vendaCliente">Cliente</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">👥</span>
+                                <select id="vendaCliente">
+                                    <option value="">Selecione um cliente</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="vendaProdutosContainer">
+                            <div class="venda-produto-item" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;">
+                                <div class="form-group" style="flex: 2;">
+                                    <label for="vendaProduto0">Produto</label>
+                                    <select id="vendaProduto0" class="venda-produto-select" onchange="updateProductPrice(0)">
+                                        <option value="">Selecione um produto</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="vendaQuantidade0">Qtd</label>
+                                    <input type="number" id="vendaQuantidade0" class="venda-quantidade-input" placeholder="1" min="1" value="1">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Preço Unit.</label>
+                                    <input type="text" id="vendaPrecoUnitario0" class="venda-preco-unitario" readonly>
+                                </div>
+                                <button type="button" class="btn-danger" style="padding: 10px 15px; height: fit-content;" onclick="removeVendaProduto(this)">🗑️</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="addVendaProduto()">➕ Adicionar Produto à Venda</button>
+
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="vendaData">Data da Venda</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📅</span>
+                                <input type="date" id="vendaData">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="registrarVenda()">Registrar Venda 🎉</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Histórico de Vendas</h3>
+                        <div id="lista-vendas" class="item-list">
+                            <p class="empty-state">Nenhuma venda registrada ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="clientes" class="tab-content">
+            <div class="card">
+                <h2>👥 Gerenciamento de Clientes</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Mantenha um registro dos seus clientes.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Adicionar Novo Cliente</h3>
+                        <div class="form-group">
+                            <label for="clienteNome">Nome do Cliente</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="clienteNome" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="clienteEmail">Email do Cliente (Opcional)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📧</span>
+                                <input type="email" id="clienteEmail" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="clienteTelefone">Telefone do Cliente (Opcional)</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📞</span>
+                                <input type="tel" id="clienteTelefone" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="adicionarCliente()">Adicionar Cliente 🌟</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Lista de Clientes</h3>
+                        <div id="lista-clientes" class="item-list">
+                            <p class="empty-state">Nenhum cliente cadastrado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="estoque" class="tab-content">
+            <div class="card">
+                <h2>📦 Gerenciamento de Estoque</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Mantenha seu estoque atualizado.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Ajustar Estoque</h3>
+                        <p style="margin-bottom: 15px; color: var(--color-text-dark); font-size: 0.85rem; font-style: italic;">
+                            Ajuste a quantidade de produtos disponíveis.
+                        </p>
+                        <div class="form-group">
+                            <label for="estoqueProduto">Produto</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🏷️</span>
+                                <select id="estoqueProduto" onchange="displayCurrentStock()">
+                                    <option value="">Selecione um produto</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="estoqueAtual">Estoque Atual</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">🔢</span>
+                                <input type="number" id="estoqueAtual" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ajusteEstoque">Ajustar por</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">+/-</span>
+                                <input type="number" id="ajusteEstoque" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <button class="btn" onclick="ajustarEstoque()">Aplicar Ajuste</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Alerta de Estoque Mínimo</h3>
+                        <div id="estoque-alertas" class="item-list">
+                            <p class="empty-state">Nenhum alerta de estoque. Tudo certo!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 25px;">
+                    <h2>Relatório Completo de Estoque</h2>
+                    <div id="lista-estoque-completa" class="item-list">
+                        <p class="empty-state">Nenhum produto no estoque ainda.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="tab-content active">
+            <div class="card">
+                <h2>📊 Dashboard Financeiro</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Visão geral dos seus resultados financeiros.
+                </p>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalFaturamento">R$ 0,00</div>
+                        <div class="stat-label">Faturamento Total</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--color-secondary), var(--color-accent)); color: var(--color-text-dark);">
+                        <div class="stat-number" id="totalLucroBruto">R$ 0,00</div>
+                        <div class="stat-label">Lucro Bruto (Faturamento - Custo de Produtos)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalCustosFixos">R$ 0,00</div>
+                        <div class="stat-label">Custos Fixos Totais</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #D32F2F, #F44336);">
+                        <div class="stat-number" id="totalImpostos">R$ 0,00</div>
+                        <div class="stat-label">Total de Impostos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalComissoes">R$ 0,00</div>
+                        <div class="stat-label">Total de Comissões de Venda</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4CAF50, #66BB6A);">
+                        <div class="stat-number" id="lucroLiquidoTotal">R$ 0,00</div>
+                        <div class="stat-label">Lucro Líquido Total Estimado</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Vendas por Período</h2>
+                    <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="form-group">
+                            <label for="dashboardStartDate">De:</label>
+                            <input type="date" id="dashboardStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="dashboardEndDate">Até:</label>
+                            <input type="date" id="dashboardEndDate">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="atualizarDashboard()">Atualizar Dashboard</button>
+                    <div id="chartContainer" style="height: 300px; margin-top: 20px;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dicas" class="tab-content">
+            <div class="card">
+                <h2>💡 Dicas de Empreendedorismo</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Conselhos para você crescer seu negócio!
+                </p>
+
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <div class="tip-icon">✨</div>
+                        <h3 class="tip-title">Entenda seu Custo</h3>
+                        <p class="tip-description">Saber o custo real de cada produto é a base para qualquer precificação lucrativa. Não subestime custos indiretos!</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">📊</div>
+                        <h3 class="tip-title">Monitore o Mercado</h3>
+                        <p class="tip-description">Pesquise os preços da concorrência, mas não se prenda a eles. Seu valor é único, e sua precificação deve refletir isso.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🤝</div>
+                        <h3 class="tip-title">Valorize sua Mão de Obra</h3>
+                        <p class="tip-description">Seu tempo e conhecimento são valiosos. Inclua o custo da sua hora de trabalho na precificação para garantir um salário justo.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">💰</div>
+                        <h3 class="tip-title">Foque na Margem de Lucro</h3>
+                        <p class="tip-description">A margem de lucro é essencial para o crescimento do seu negócio. Não tenha medo de cobrar o justo pelo seu trabalho.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">📈</div>
+                        <h3 class="tip-title">Cuidado com Descontos</h3>
+                        <p class="tip-description">Ofereça descontos de forma estratégica, sem comprometer sua margem. Descontos excessivos podem minar sua lucratividade.</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🎯</div>
+                        <h3 class="tip-title">Ponto de Equilíbrio</h3>
+                        <p class="tip-description">Conheça seu ponto de equilíbrio para saber a quantidade mínima de vendas necessárias para cobrir seus custos e salário.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="configuracoes" class="tab-content">
+            <div class="card">
+                <h2>⚙️ Configurações</h2>
+                <p style="margin-bottom: 25px; color: var(--color-primary); font-style: italic; font-weight: 500; font-size: 0.95rem;">
+                    Gerencie suas informações de usuário e dados.
+                </p>
+
+                <div class="form-grid">
+                    <div class="form-section">
+                        <h3>Dados do Usuário</h3>
+                        <div class="form-group">
+                            <label for="configUserName">Nome</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">👤</span>
+                                <input type="text" id="configUserName" placeholder="Digite aqui...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="configUserEmail">Email</label>
+                            <div class="input-with-icon">
+                                <span class="input-icon">📧</span>
+                                <input type="email" id="configUserEmail" placeholder="Digite aqui..." readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="configUserLogoFile">Carregar Logo (Arquivo)</label>
+                            <input type="file" id="configUserLogoFile" accept="image/*">
+                            <p style="font-size: 0.85rem; color: var(--color-text-dark); margin-top: 5px;">
+                                A imagem será convertida para um formato compatível e salva localmente.
+                            </p>
+                        </div>
+                        <button class="btn" onclick="saveUserSettings()">Salvar Configurações</button>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Gerenciamento de Dados</h3>
+                        <p style="margin-bottom: 15px; color: var(--color-text-dark); font-size: 0.85rem; font-style: italic;">
+                            Importe ou exporte seus dados.
+                        </p>
+                        <button class="btn btn-secondary" onclick="exportDataToXLSX()">Exportar Dados (XLSX)</button>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="importFileInput">Importar Dados (XLSX)</label>
+                            <input type="file" id="importFileInput" accept=".xlsx, .xls">
+                            <button class="btn" onclick="importDataFromXLSX()">Importar</button>
+                        </div>
+                        <button class="btn btn-danger" style="margin-top: 20px;" onclick="confirmClearAllData()">Limpar Todos os Dados</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        // --- Variáveis Globais ---
+        let vendas = [];
+        let produtos = [];
+        let clientes = [];
+        let custosFixos = [];
+        let custosVariaveis = [];
+        let estoque = {}; // Para armazenar o estoque de cada produto
+        let currentUser = null; // Para o usuário logado
+        let salesChart = null; // Variável para a instância do Chart.js
+
+        // --- Funções Auxiliares de UI ---
+        function showMessage(message, type = 'info') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.tab-btn[onclick="showTab('${tabId}')"]`).classList.add('active');
+
+            // Renderizar listas e dados quando a aba é mostrada
+            if (tabId === 'produtos') {
+                renderizarProdutos();
+            } else if (tabId === 'vendas') {
+                renderizarVendas();
+                carregarClientesNaVenda();
+                carregarProdutosNaVenda();
+            } else if (tabId === 'clientes') {
+                renderizarClientes();
+            } else if (tabId === 'estoque') {
+                renderizarEstoque();
+                carregarProdutosNoEstoque();
+            } else if (tabId === 'dashboard') {
+                atualizarDashboard();
+            } else if (tabId === 'calculadora') {
+                loadCustos();
+                loadProductionData();
+                setupProductionCalculation(); // Garante que o cálculo automático esteja ativo
+                // Não há mais toggleDiscountField() pois o campo de tipo de precificação foi removido
+                // Atualiza a prévia dos custos ao carregar a aba da calculadora
+                updateCostPreviews();
+                // Oculta a seção de preço por quantidade ao carregar a aba
+                const precoPorQuantidadeSection = document.getElementById('precoPorQuantidadeSection');
+                precoPorQuantidadeSection.classList.remove('expanded');
+            } else if (tabId === 'configuracoes') {
+                loadUserSettings();
+            }
+        }
+
+        // --- Gerenciamento de Dados (localStorage) ---
+        function salvarDados(key, data) {
+            try {
+                localStorage.setItem(`${currentUser.email}_${key}`, JSON.stringify(data));
+            } catch (e) {
+                console.error("Erro ao salvar dados no localStorage:", e);
+                showMessage("Erro ao salvar dados. Seu navegador pode estar com o armazenamento cheio.", "error");
+            }
+        }
+
+        function carregarDados(key) {
+            try {
+                const data = localStorage.getItem(`${currentUser.email}_${key}`);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error("Erro ao carregar dados do localStorage:", e);
+                showMessage("Erro ao carregar dados. Seus dados podem estar corrompidos.", "error");
+                return [];
+            }
+        }
+
+        function carregarEstoque() {
+            try {
+                const data = localStorage.getItem(`${currentUser.email}_estoque`);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                console.error("Erro ao carregar estoque do localStorage:", e);
+                showMessage("Erro ao carregar dados de estoque.", "error");
+                return {};
+            }
+        }
+
+        function clearAllUserData() {
+            if (!currentUser) return;
+            const userEmailPrefix = `${currentUser.email}_`;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith(userEmailPrefix)) {
+                    localStorage.removeItem(key);
+                }
+            }
+            // Resetar variáveis globais
+            vendas = [];
+            produtos = [];
+            clientes = [];
+            custosFixos = [];
+            custosVariaveis = [];
+            estoque = {};
+            showMessage("Todos os seus dados foram limpos com sucesso!", "success");
+            // Recarregar UI
+            loadUserData();
+            showTab('dashboard');
+        }
+
+        function confirmClearAllData() {
+            if (confirm("ATENÇÃO: Tem certeza que deseja limpar TODOS os seus dados? Esta ação não pode ser desfeita!")) {
+                clearAllUserData();
+            }
+        }
+
+        // --- Autenticação (Simplificada) ---
+        function showLogin() {
+            document.getElementById('auth-section').style.display = 'flex'; /* Alterado para flex */
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('app-content').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('auth-section').style.display = 'flex'; /* Alterado para flex */
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'block';
+            document.getElementById('app-content').style.display = 'none';
+        }
+
+        function registerUser() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            if (!name || !email || !password) {
+                showMessage("Por favor, preencha todos os campos para se registrar.", "error");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(u => u.email === email)) {
+                showMessage("Este email já está cadastrado. Tente fazer login.", "error");
+                return;
+            }
+
+            const newUser = { name, email, password, logo: '' }; // Removido backgroundImage
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            showMessage("Cadastro realizado com sucesso! Faça login para continuar.", "success");
+            showLogin();
+        }
+
+        function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showMessage("Por favor, preencha email e senha.", "error");
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showMessage(`Bem-vindo(a), ${currentUser.name}!`, "success");
+                loadUserData();
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('app-content').style.display = 'block';
+                showTab('dashboard'); // Ou a aba inicial desejada
+            } else {
+                showMessage("Email ou senha inválidos.", "error");
+            }
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showMessage("Você foi desconectado.", "info");
+            showLogin();
+        }
+
+        function checkLoginStatus() {
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                loadUserData();
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('app-content').style.display = 'block';
+                showTab('dashboard'); // Ou a última aba acessada
+            } else {
+                showLogin();
+            }
+        }
+
+        function loadUserData() {
+            if (!currentUser) return;
+
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            const userLogo = document.getElementById('userLogo');
+            if (currentUser.logo) {
+                userLogo.src = currentUser.logo;
+                userLogo.style.display = 'block';
+            } else {
+                userLogo.style.display = 'none';
+            }
+
+            // A imagem de fundo agora é controlada apenas pelo CSS padrão ou por uma imagem salva
+            document.body.style.backgroundImage = 'none'; // Garante que não haja imagem de fundo de dados antigos
+            // Se você quiser uma imagem de fundo padrão, defina-a no CSS.
+
+            vendas = carregarDados('vendas');
+            produtos = carregarDados('produtos');
+            clientes = carregarDados('clientes');
+            custosFixos = carregarDados('custosFixos');
+            custosVariaveis = carregarDados('custosVariaveis');
+            estoque = carregarEstoque();
+
+            // Sincronizar estoque: garantir que cada produto tenha uma entrada de estoque
+            produtos.forEach(p => {
+                if (estoque[p.id] === undefined) {
+                    estoque[p.id] = 0; // Inicializa estoque como 0 se não existir
+                }
+            });
+            salvarDados('estoque', estoque);
+
+            // Chamadas de renderização iniciais
+            renderizarProdutos();
+            renderizarVendas();
+            renderizarClientes();
+            renderizarEstoque();
+            loadCustos(); // Carrega e renderiza os custos fixos e variáveis
+            loadProductionData(); // Carrega dados de produção
+            atualizarDashboard();
+        }
+
+        // --- Formatação de Moeda ---
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function parseCurrency(value) {
+            return parseFloat(value.replace(/[^d,]/g, '').replace(',', '.')) || 0;
+        }
+
+        // --- Funções da Calculadora ---
+        function generateUniqueId() {
+            return Date.now() + Math.random().toString(36).substr(2, 9);
+        }
+
+        function addDynamicCost(type) {
+            const containerId = type === 'fixo' ? 'custosFixosContainer' : 'custosVariaveisContainer';
+            const container = document.getElementById(containerId);
+            const uniqueId = generateUniqueId(); // Gerar um ID único para cada item
+
+            const newCostDiv = document.createElement('div');
+            newCostDiv.className = 'form-group dynamic-cost-item';
+            newCostDiv.setAttribute('data-id', uniqueId); // Adiciona o ID ao elemento pai
+
+            if (type === 'fixo') {
+                newCostDiv.innerHTML = `
+                    <label for="fixoCustoNome_${uniqueId}">Nome do Custo</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📝</span>
+                        <input type="text" id="fixoCustoNome_${uniqueId}" placeholder="Digite aqui..." required>
+                    </div>
+                    <label for="fixoCustoValor_${uniqueId}">Valor (R$)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">💸</span>
+                        <input type="number" id="fixoCustoValor_${uniqueId}" step="0.01" placeholder="Digite aqui..." required>
+                    </div>
+                    <button class="btn-danger" onclick="removeDynamicCost(this, 'fixo')">Remover</button>
+                `;
+            } else { // type === 'variavel'
+                newCostDiv.innerHTML = `
+                    <label for="variavelCustoNome_${uniqueId}">Nome do Ingrediente</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📝</span>
+                        <input type="text" id="variavelCustoNome_${uniqueId}" placeholder="Digite aqui..." required>
+                    </div>
+                    <label for="variavelCustoTotal_${uniqueId}">Valor Total do Ingrediente (R$)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">💰</span>
+                        <input type="number" id="variavelCustoTotal_${uniqueId}" step="0.01" placeholder="Digite aqui..." oninput="calculateUnitCost('${uniqueId}')" required>
+                    </div>
+                    <label for="variavelCustoRendimento_${uniqueId}">Rendimento (unidades)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔢</span>
+                        <input type="number" id="variavelCustoRendimento_${uniqueId}" step="1" placeholder="Digite aqui..." oninput="calculateUnitCost('${uniqueId}')" required>
+                    </div>
+                    <label for="variavelCustoUnitario_${uniqueId}">Valor Unitário por Ingrediente (R$)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">💲</span>
+                        <input type="text" id="variavelCustoUnitario_${uniqueId}" readonly placeholder="Calculado">
+                    </div>
+                    <button class="btn-danger" onclick="removeDynamicCost(this, 'variavel')">Remover</button>
+                `;
+            }
+
+            container.appendChild(newCostDiv);
+
+            // Adicionar event listeners para salvar automaticamente e recalcular
+            if (type === 'fixo') {
+                newCostDiv.querySelector(`#fixoCustoNome_${uniqueId}`).addEventListener('change', () => { saveCustos(); calcularPreco(); });
+                newCostDiv.querySelector(`#fixoCustoValor_${uniqueId}`).addEventListener('change', () => { saveCustos(); calcularPreco(); });
+            } else {
+                newCostDiv.querySelector(`#variavelCustoNome_${uniqueId}`).addEventListener('change', () => { saveCustos(); calcularPreco(); });
+                // calculateUnitCost já chama saveCustos e calcularPreco
+            }
+            setupProductionCalculation(); // Recalcula ao adicionar novo custo
+            updateCostPreviews(); // Atualiza a prévia
+        }
+
+        function calculateUnitCost(uniqueId) {
+            const totalInput = document.getElementById(`variavelCustoTotal_${uniqueId}`);
+            const rendimentoInput = document.getElementById(`variavelCustoRendimento_${uniqueId}`);
+            const unitarioInput = document.getElementById(`variavelCustoUnitario_${uniqueId}`);
+
+            const totalValue = parseFloat(totalInput.value) || 0;
+            const rendimento = parseFloat(rendimentoInput.value) || 0;
+
+            let unitValue = 0;
+            if (rendimento > 0) {
+                unitValue = totalValue / rendimento;
+            }
+            unitarioInput.value = formatCurrency(unitValue);
+            saveCustos(); // Salva os custos variáveis atualizados
+            calcularPreco(); // Recalcula o preço final
+            updateCostPreviews(); // Atualiza a prévia
+        }
+
+        function removeDynamicCost(button, type) {
+            const item = button.closest('.dynamic-cost-item');
+            item.remove();
+            saveCustos(); // Salva após remover
+            calcularPreco(); // Recalcula após remover
+            updateCostPreviews(); // Atualiza a prévia
+        }
+
+        function saveCustos() {
+            custosFixos = [];
+            document.querySelectorAll('#custosFixosContainer .dynamic-cost-item').forEach(item => {
+                const name = item.querySelector('input[type="text"]').value;
+                const value = parseFloat(item.querySelector('input[type="number"]').value) || 0;
+                if (name && value >= 0) { // Permitir custo 0
+                    custosFixos.push({ id: item.getAttribute('data-id'), name, value });
+                }
+            });
+            salvarDados('custosFixos', custosFixos);
+
+            custosVariaveis = [];
+            document.querySelectorAll('#custosVariaveisContainer .dynamic-cost-item').forEach(item => {
+                const name = item.querySelector('input[type="text"]').value;
+                const totalValue = parseFloat(item.querySelector('input[id^="variavelCustoTotal_"]').value) || 0;
+                const rendimento = parseFloat(item.querySelector('input[id^="variavelCustoRendimento_"]').value) || 0;
+                let unitValue = 0;
+                if (rendimento > 0) {
+                    unitValue = totalValue / rendimento;
+                }
+                if (name) { // Considera válido se tiver nome
+                    custosVariaveis.push({ id: item.getAttribute('data-id'), name, totalValue, rendimento, unitValue });
+                }
+            });
+            salvarDados('custosVariaveis', custosVariaveis);
+            updateCostPreviews(); // Atualiza a prévia
+        }
+
+        function loadCustos() {
+            const custosFixosContainer = document.getElementById('custosFixosContainer');
+            const custosVariaveisContainer = document.getElementById('custosVariaveisContainer');
+            custosFixosContainer.innerHTML = '';
+            custosVariaveisContainer.innerHTML = '';
+
+            custosFixos.forEach((cost) => {
+                const newCostDiv = document.createElement('div');
+                newCostDiv.className = 'form-group dynamic-cost-item';
+                newCostDiv.setAttribute('data-id', cost.id || generateUniqueId()); // Garante ID
+                newCostDiv.innerHTML = `
+                    <label for="fixoCustoNome_${newCostDiv.getAttribute('data-id')}">Nome do Custo</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📝</span>
+                        <input type="text" id="fixoCustoNome_${newCostDiv.getAttribute('data-id')}" value="${cost.name}" placeholder="Digite aqui..." required>
+                    </div>
+                    <label for="fixoCustoValor_${newCostDiv.getAttribute('data-id')}">Valor (R$)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">💸</span>
+                        <input type="number" id="fixoCustoValor_${newCostDiv.getAttribute('data-id')}" step="0.01" value="${cost.value}" placeholder="Digite aqui..." required>
+                    </div>
+                    <button class="btn-danger" onclick="removeDynamicCost(this, 'fixo')">Remover</button>
+                `;
+                custosFixosContainer.appendChild(newCostDiv);
+                newCostDiv.querySelector('input[type="text"]').addEventListener('change', () => { saveCustos(); calcularPreco(); });
+                newCostDiv.querySelector('input[type="number"]').addEventListener('change', () => { saveCustos(); calcularPreco(); });
+            });
+
+            custosVariaveis.forEach((cost) => {
+                const newCostDiv = document.createElement('div');
+                newCostDiv.className = 'form-group dynamic-cost-item';
+                newCostDiv.setAttribute('data-id', cost.id || generateUniqueId()); // Garante ID
+                newCostDiv.innerHTML = `
+                    <label for="variavelCustoNome_${newCostDiv.getAttribute('data-id')}">Nome do Ingrediente</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📝</span>
+                        <input type="text" id="variavelCustoNome_${newCostDiv.getAttribute('data-id')}" value="${cost.name}" placeholder="Digite aqui..." required>
+                    </div>
+                    <label for="variavelCustoTotal_${newCostDiv.getAttribute('data-id')}">Valor Total do Ingrediente (R$)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">💰</span>
+                        <input type="number" id="variavelCustoTotal_${newCostDiv.getAttribute('data-id')}" step="0.01" value="${cost.totalValue}" placeholder="Digite aqui..." oninput="calculateUnitCost('${newCostDiv.getAttribute('data-id')}')" required>
+                    </div>
+                    <label for="variavelCustoRendimento_${newCostDiv.getAttribute('data-id')}">Rendimento (unidades)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔢</span>
+                        <input type="number" id="variavelCustoRendimento_${newCostDiv.getAttribute('data-id')}" step="1" value="${cost.rendimento}" placeholder="Digite aqui..." oninput="calculateUnitCost('${newCostDiv.getAttribute('data-id')}')" required>
+                    </div>
+                    <label for="variavelCustoUnitario_${newCostDiv.getAttribute('data-id')}">Valor Unitário por Ingrediente (R$)</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">💲</span>
+                        <input type="text" id="variavelCustoUnitario_${newCostDiv.getAttribute('data-id')}" value="${formatCurrency(cost.unitValue)}" readonly placeholder="Calculado">
+                    </div>
+                    <button class="btn-danger" onclick="removeDynamicCost(this, 'variavel')">Remover</button>
+                `;
+                custosVariaveisContainer.appendChild(newCostDiv);
+                newCostDiv.querySelector('input[type="text"]').addEventListener('change', () => { saveCustos(); calcularPreco(); });
+                // calculateUnitCost já tem os listeners
+            });
+            updateCostPreviews(); // Atualiza a prévia
+        }
+
+        function saveProductionData() {
+            const salarioDesejado = parseFloat(document.getElementById('salarioDesejado').value) || 0;
+            const produtosPorHora = parseFloat(document.getElementById('produtosPorHora').value) || 0;
+            const diasPorMes = parseFloat(document.getElementById('diasPorMes').value) || 0;
+            const horasDia = parseFloat(document.getElementById('horasDia').value) || 0;
+            const impostos = parseFloat(document.getElementById('impostos').value) || 0;
+            const comissaoVenda = parseFloat(document.getElementById('comissaoVenda').value) || 0;
+            const margemLucro = parseFloat(document.getElementById('margemLucro').value) || 0;
+            // Removido: tipoPrecificacao
+            // Removido: descontoPorQuantidade
+
+            const productionData = {
+                salarioDesejado,
+                produtosPorHora,
+                diasPorMes,
+                horasDia,
+                impostos,
+                comissaoVenda,
+                margemLucro,
+                // Removido: tipoPrecificacao
+                // Removido: descontoPorQuantidade
+            };
+            salvarDados('productionData', productionData);
+        }
+
+        function loadProductionData() {
+            const productionData = carregarDados('productionData');
+            if (productionData) {
+                document.getElementById('salarioDesejado').value = productionData.salarioDesejado || '';
+                document.getElementById('produtosPorHora').value = productionData.produtosPorHora || '';
+                document.getElementById('diasPorMes').value = productionData.diasPorMes || '';
+                document.getElementById('horasDia').value = productionData.horasDia || '';
+                document.getElementById('impostos').value = productionData.impostos || '';
+                document.getElementById('comissaoVenda').value = productionData.comissaoVenda || '';
+                document.getElementById('margemLucro').value = productionData.margemLucro || '';
+                // Removido: document.getElementById('tipoPrecificacao').value = productionData.tipoPrecificacao || 'unitario';
+                // Removido: document.getElementById('descontoPorQuantidade').value = productionData.descontoPorQuantidade || '';
+                // Removido: toggleDiscountField();
+            }
+        }
+
+        function setupProductionCalculation() {
+            const inputs = [
+                'salarioDesejado', 'produtosPorHora', 'diasPorMes', 'horasDia',
+                'impostos', 'comissaoVenda', 'margemLucro'
+            ];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', () => {
+                        calcularUnidadesMes();
+                        saveProductionData(); // Salva os dados de produção automaticamente
+                        calcularPreco(); // Recalcula o preço final
+                        updateCostPreviews(); // Atualiza a prévia
+                    });
+                }
+            });
+
+            // Adiciona listeners para os campos de cálculo por quantidade
+            document.getElementById('quantidadeDesejada').addEventListener('input', calcularPrecoPorQuantidade);
+            document.getElementById('lucroPorQuantidade').addEventListener('input', calcularPrecoPorQuantidade);
+
+
+            // Chama o cálculo inicial ao configurar
+            calcularUnidadesMes();
+            updateCostPreviews(); // Atualiza a prévia
+        }
+
+        function calcularUnidadesMes() {
+            const produtosPorHora = parseFloat(document.getElementById('produtosPorHora').value) || 0;
+            const diasPorMes = parseFloat(document.getElementById('diasPorMes').value) || 0;
+            const horasDia = parseFloat(document.getElementById('horasDia').value) || 0;
+
+            const unidadesMes = produtosPorHora * horasDia * diasPorMes;
+            document.getElementById('unidadesMes').value = unidadesMes.toFixed(0);
+        }
+
+        // Removido: toggleDiscountField()
+
+        function updateCostPreviews() {
+            const totalCustosFixos = custosFixos.reduce((sum, cost) => sum + cost.value, 0);
+            const totalCustosVariaveisUnitario = custosVariaveis.reduce((sum, cost) => sum + cost.unitValue, 0);
+
+            document.getElementById('previewCustoFixoTotal').textContent = formatCurrency(totalCustosFixos);
+            document.getElementById('previewCustoVariavelTotalUnitario').textContent = formatCurrency(totalCustosVariaveisUnitario);
+        }
+
+        function calcularPreco() {
+            saveCustos(); // Garante que os custos mais recentes estão salvos
+            saveProductionData(); // Garante que os dados de produção mais recentes estão salvos
+
+            const totalCustosFixos = custosFixos.reduce((sum, cost) => sum + cost.value, 0);
+            const totalCustosVariaveisUnitario = custosVariaveis.reduce((sum, cost) => sum + cost.unitValue, 0); // Usar unitValue
+            const salarioDesejado = parseFloat(document.getElementById('salarioDesejado').value) || 0;
+            const produtosPorHora = parseFloat(document.getElementById('produtosPorHora').value) || 0;
+            const diasPorMes = parseFloat(document.getElementById('diasPorMes').value) || 0;
+            const horasDia = parseFloat(document.getElementById('horasDia').value) || 0;
+            const impostosPercent = parseFloat(document.getElementById('impostos').value) || 0;
+            const comissaoVendaPercent = parseFloat(document.getElementById('comissaoVenda').value) || 0;
+            let margemLucroPercent = parseFloat(document.getElementById('margemLucro').value) || 0;
+
+            const horasPorMes = diasPorMes * horasDia;
+            const totalProducaoMensal = produtosPorHora * horasPorMes;
+
+            if (totalProducaoMensal <= 0) {
+                showMessage("Não é possível calcular o preço. Verifique a produção mensal (Produtos por Hora, Dias por Mês, Horas por Dia).", "error");
+                document.getElementById('resultado-calculadora').style.display = 'none';
+                return;
+            }
+
+            // 1. Custo Fixo Unitário
+            const custoFixoUnitario = totalCustosFixos / totalProducaoMensal;
+
+            // Custo da Sua Hora de Trabalho (por produto)
+            let custoHoraTrabalhoPorProduto = 0;
+            if (salarioDesejado > 0 && horasPorMes > 0 && produtosPorHora > 0) {
+                const custoHoraDeTrabalho = salarioDesejado / horasPorMes;
+                custoHoraTrabalhoPorProduto = custoHoraDeTrabalho / produtosPorHora;
+            }
+
+            // 4. Custo Total por Unidade (CTU)
+            const custoTotalUnitario = custoFixoUnitario + totalCustosVariaveisUnitario + custoHoraTrabalhoPorProduto;
+
+            if (custoTotalUnitario <= 0) {
+                showMessage("Não é possível calcular o preço. O custo total por unidade é zero ou negativo.", "error");
+                document.getElementById('resultado-calculadora').style.display = 'none';
+                return;
+            }
+
+            // 5. Calcular Preço de Venda Ideal
+            // Preço de venda = custo total por unidade × (1 + (lucroDesejado / 100))
+            // Para incluir impostos e comissões, eles também devem ser considerados como um "custo" no cálculo do preço final.
+            // A fórmula original era Preço = Custo / (1 - %Total), onde %Total incluía lucro.
+            // Agora, com a nova regra de lucro sobre o custo, precisamos ajustar.
+
+            // Custo Base para o cálculo do preço final (inclui custos diretos e indiretos por unidade)
+            let custoBaseParaPrecoFinal = custoTotalUnitario;
+
+            // Adicionar impostos e comissões como percentuais sobre o PREÇO DE VENDA
+            // PreçoFinal = (CustoBase + (Impostos% * PreçoFinal) + (Comissao% * PreçoFinal)) * (1 + LucroDesejado%)
+            // PreçoFinal - (Impostos% * PreçoFinal) - (Comissao% * PreçoFinal) = CustoBase * (1 + LucroDesejado%)
+            // PreçoFinal * (1 - Impostos% - Comissao%) = CustoBase * (1 + LucroDesejado%)
+            // PreçoFinal = (CustoBase * (1 + LucroDesejado%)) / (1 - Impostos% - Comissao%)
+
+            const fatorLucro = (1 + (margemLucroPercent / 100));
+            const fatorImpostosComissao = (1 - (impostosPercent / 100) - (comissaoVendaPercent / 100));
+
+            if (fatorImpostosComissao <= 0) {
+                showMessage("A soma de Impostos e Taxa de Vendas/Comissão deve ser menor que 100%.", "error");
+                document.getElementById('resultado-calculadora').style.display = 'none';
+                return;
+            }
+
+            let precoFinal = (custoBaseParaPrecoFinal * fatorLucro) / fatorImpostosComissao;
+
+            // Detalhes para exibição
+            const valorImpostos = precoFinal * (impostosPercent / 100);
+            const valorComissao = precoFinal * (comissaoVendaPercent / 100);
+            // O valor de lucro agora é sobre o custo total por unidade, antes de impostos e comissões
+            const valorLucro = custoTotalUnitario * (margemLucroPercent / 100);
+
+
+            document.getElementById('custoFixoUnitarioDetalhe').textContent = formatCurrency(custoFixoUnitario);
+            document.getElementById('custoVariavelUnitarioDetalhe').textContent = formatCurrency(totalCustosVariaveisUnitario);
+            document.getElementById('custoHoraTrabalhoDetalhe').textContent = formatCurrency(custoHoraTrabalhoPorProduto);
+            document.getElementById('totalCustosUnitarioDetalhe').textContent = formatCurrency(custoTotalUnitario);
+            document.getElementById('valorImpostosDetalhe').textContent = formatCurrency(valorImpostos);
+            document.getElementById('valorComissaoDetalhe').textContent = formatCurrency(valorComissao);
+            document.getElementById('valorLucroDetalhe').textContent = formatCurrency(valorLucro);
+
+            document.getElementById('precoFinal').textContent = formatCurrency(precoFinal);
+
+            // Ponto de Equilíbrio
+            let qtdPontoEquilibrio = 0;
+            let precoPontoEquilibrio = 0;
+
+            // O cálculo do ponto de equilíbrio deve considerar o preço de venda que cobre os custos fixos, variáveis e a mão de obra,
+            // mas sem o lucro desejado.
+            // A fórmula é Custo Fixo Total / (Preço de Venda Unitário - Custo Variável Unitário)
+            // O "Preço de Venda Unitário" aqui é o preço que cobre os custos variáveis, custo fixo unitário e mão de obra unitária.
+            // Ajustamos o precoVendaParaPontoEquilibrio para não incluir a margem de lucro, mas ainda cobrir impostos e comissões
+            const precoVendaParaPontoEquilibrio = custoTotalUnitario / (1 - (impostosPercent / 100) - (comissaoVendaPercent / 100));
+
+
+            if (precoVendaParaPontoEquilibrio > totalCustosVariaveisUnitario + custoHoraTrabalhoPorProduto) {
+                qtdPontoEquilibrio = (totalCustosFixos + salarioDesejado) / (precoVendaParaPontoEquilibrio - (totalCustosVariaveisUnitario + custoHoraTrabalhoPorProduto));
+                precoPontoEquilibrio = precoVendaParaPontoEquilibrio;
+            } else {
+                qtdPontoEquilibrio = 0;
+                precoPontoEquilibrio = 0;
+            }
+
+            document.getElementById('qtdPontoEquilibrio').textContent = qtdPontoEquilibrio > 0 ? Math.ceil(qtdPontoEquilibrio).toLocaleString('pt-BR') : '0';
+            document.getElementById('precoPontoEquilibrio').textContent = formatCurrency(precoPontoEquilibrio);
+
+            document.getElementById('resultado-calculadora').style.display = 'block';
+
+            // Recalcula o preço por quantidade se a seção estiver expandida
+            const precoPorQuantidadeSection = document.getElementById('precoPorQuantidadeSection');
+            if (precoPorQuantidadeSection.classList.contains('expanded')) {
+                calcularPrecoPorQuantidade();
+            }
+        }
+
+        function calcularPrecoPorQuantidade() {
+            const quantidadeDesejada = parseInt(document.getElementById('quantidadeDesejada').value) || 0;
+            const lucroPorQuantidadePercent = parseFloat(document.getElementById('lucroPorQuantidade').value) || 0;
+
+            if (quantidadeDesejada <= 0) {
+                document.getElementById('resultado-quantidade').style.display = 'none';
+                showMessage("A quantidade desejada deve ser maior que zero.", "error");
+                return;
+            }
+
+            // Reutiliza o custo total por unidade já calculado
+            const custoFixoUnitario = parseFloat(document.getElementById('custoFixoUnitarioDetalhe').textContent.replace('R$', '').replace('.', '').replace(',', '.')) || 0;
+            const custoVariavelUnitario = parseFloat(document.getElementById('custoVariavelUnitarioDetalhe').textContent.replace('R$', '').replace('.', '').replace(',', '.')) || 0;
+            const custoHoraTrabalho = parseFloat(document.getElementById('custoHoraTrabalhoDetalhe').textContent.replace('R$', '').replace('.', '').replace(',', '.')) || 0;
+            const custoTotalUnitario = custoFixoUnitario + custoVariavelUnitario + custoHoraTrabalho;
+
+            const impostosPercent = parseFloat(document.getElementById('impostos').value) || 0;
+            const comissaoVendaPercent = parseFloat(document.getElementById('comissaoVenda').value) || 0;
+
+            const custoTotalDaQuantidade = custoTotalUnitario * quantidadeDesejada;
+
+            // Calcular Preço de Venda Ideal para a quantidade
+            const fatorLucro = (1 + (lucroPorQuantidadePercent / 100));
+            const fatorImpostosComissao = (1 - (impostosPercent / 100) - (comissaoVendaPercent / 100));
+
+            if (fatorImpostosComissao <= 0) {
+                showMessage("A soma de Impostos e Taxa de Vendas/Comissão deve ser menor que 100%.", "error");
+                document.getElementById('resultado-quantidade').style.display = 'none';
+                return;
+            }
+
+            const precoTotalSugerido = (custoTotalDaQuantidade * fatorLucro) / fatorImpostosComissao;
+
+            document.getElementById('custoTotalQuantidade').textContent = formatCurrency(custoTotalDaQuantidade);
+            document.getElementById('precoTotalQuantidade').textContent = formatCurrency(precoTotalSugerido);
+            document.getElementById('resultado-quantidade').style.display = 'block';
+        }
+
+
+        function limparCalculadora() {
+            document.getElementById('salarioDesejado').value = '';
+            document.getElementById('produtosPorHora').value = '';
+            document.getElementById('diasPorMes').value = '';
+            document.getElementById('horasDia').value = '';
+            document.getElementById('impostos').value = '';
+            document.getElementById('comissaoVenda').value = '';
+            document.getElementById('margemLucro').value = '';
+            // Removido: document.getElementById('tipoPrecificacao').value = 'unitario';
+            // Removido: document.getElementById('descontoPorQuantidade').value = '';
+            // Removido: toggleDiscountField();
+
+            document.getElementById('custosFixosContainer').innerHTML = '';
+            document.getElementById('custosVariaveisContainer').innerHTML = '';
+            custosFixos = [];
+            custosVariaveis = [];
+            salvarDados('custosFixos', custosFixos);
+            salvarDados('custosVariaveis', custosVariaveis);
+            salvarDados('productionData', {}); // Limpa dados de produção salvos
+
+            document.getElementById('unidadesMes').value = '';
+            document.getElementById('precoFinal').textContent = formatCurrency(0);
+            document.getElementById('resultado-calculadora').style.display = 'none';
+
+            document.getElementById('custoFixoUnitarioDetalhe').textContent = formatCurrency(0);
+            document.getElementById('custoVariavelUnitarioDetalhe').textContent = formatCurrency(0);
+            document.getElementById('custoHoraTrabalhoDetalhe').textContent = formatCurrency(0);
+            document.getElementById('totalCustosUnitarioDetalhe').textContent = formatCurrency(0);
+            document.getElementById('valorImpostosDetalhe').textContent = formatCurrency(0);
+            document.getElementById('valorComissaoDetalhe').textContent = formatCurrency(0);
+            document.getElementById('valorLucroDetalhe').textContent = formatCurrency(0);
+            document.getElementById('qtdPontoEquilibrio').textContent = '0';
+            document.getElementById('precoPontoEquilibrio').textContent = formatCurrency(0);
+
+            // Limpa e oculta a seção de preço por quantidade
+            document.getElementById('quantidadeDesejada').value = '1';
+            document.getElementById('lucroPorQuantidade').value = '0';
+            document.getElementById('custoTotalQuantidade').textContent = formatCurrency(0);
+            document.getElementById('precoTotalQuantidade').textContent = formatCurrency(0);
+            document.getElementById('resultado-quantidade').style.display = 'none';
+            document.getElementById('precoPorQuantidadeSection').classList.remove('expanded');
+
+
+            updateCostPreviews(); // Atualiza a prévia para 0
+            showMessage("Calculadora limpa!", "info");
+        }
+
+        function toggleCollapsible(id) {
+            const element = document.getElementById(id);
+            element.classList.toggle('expanded');
+            // Se expandir, recalcula o preço por quantidade
+            if (element.classList.contains('expanded')) {
+                calcularPrecoPorQuantidade();
+            }
+        }
+
+        // --- Gerenciamento de Produtos ---
+        function adicionarProduto() {
+            const nome = document.getElementById('produtoNome').value;
+            const precoCusto = parseFloat(document.getElementById('produtoPrecoCusto').value) || 0;
+            const precoVenda = parseFloat(document.getElementById('produtoPrecoVenda').value) || 0;
+            const estoqueInicial = parseInt(document.getElementById('produtoEstoqueInicial').value) || 0; // Alterado para estoqueInicial
+
+            if (!nome || precoCusto <= 0 || precoVenda <= 0) {
+                showMessage("Por favor, preencha nome, custo e preço de venda válidos para o produto.", "error");
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(), // ID único baseado no timestamp
+                nome,
+                precoCusto,
+                precoVenda,
+                estoqueMinimo: estoqueInicial // estoque inicial também serve como mínimo para alerta
+            };
+            produtos.push(newProduct);
+            salvarDados('produtos', produtos);
+
+            // Inicializa ou atualiza o estoque para o novo produto com o valor do estoque inicial
+            estoque[newProduct.id] = estoqueInicial;
+            salvarDados('estoque', estoque);
+
+            showMessage("Produto adicionado com sucesso!", "success");
+            renderizarProdutos();
+            document.getElementById('produtoNome').value = '';
+            document.getElementById('produtoPrecoCusto').value = '';
+            document.getElementById('produtoPrecoVenda').value = '';
+            document.getElementById('produtoEstoqueInicial').value = ''; // Limpa o campo
+            carregarProdutosNaVenda(); // Atualiza a lista de produtos na aba de vendas
+            carregarProdutosNoEstoque(); // Atualiza a lista de produtos na aba de estoque
+        }
+
+        function addProdutoFromCalculadora() {
+            const nome = document.getElementById('calcProdutoNome').value;
+            const estoqueInicial = parseInt(document.getElementById('calcProdutoEstoqueInicial').value) || 0;
+
+            if (!nome) {
+                showMessage("Por favor, insira o nome do produto para adicionar ao controle.", "error");
+                return;
+            }
+
+            const newProduct = {
+                id: Date.now(),
+                nome: nome,
+                precoCusto: 0, // Default para 0
+                precoVenda: 0, // Default para 0
+                estoqueMinimo: estoqueInicial // O estoque inicial também serve como mínimo para alerta
+            };
+
+            produtos.push(newProduct);
+            salvarDados('produtos', produtos);
+
+            estoque[newProduct.id] = estoqueInicial;
+            salvarDados('estoque', estoque);
+
+            showMessage("Produto adicionado ao controle com sucesso! Você pode editar os detalhes (custo/venda) na aba Produtos.", "success");
+            renderizarProdutos(); // Renderiza a lista de produtos na aba Produtos
+            renderizarEstoque(); // Renderiza a lista de estoque na aba Estoque
+            document.getElementById('calcProdutoNome').value = '';
+            document.getElementById('calcProdutoEstoqueInicial').value = '';
+            carregarProdutosNaVenda(); // Atualiza a lista de produtos na aba de vendas
+            carregarProdutosNoEstoque(); // Atualiza a lista de produtos na aba de estoque
+            atualizarDashboard(); // Atualiza o dashboard
+        }
+
+        function removerProduto(id) {
+            if (confirm("Tem certeza que deseja remover este produto? Esta ação não pode ser desfeita e removerá o produto de vendas e estoque relacionados.")) {
+                produtos = produtos.filter(p => p.id !== id);
+                salvarDados('produtos', produtos);
+
+                // Remover estoque do produto
+                delete estoque[id];
+                salvarDados('estoque', estoque);
+
+                // Opcional: Remover vendas relacionadas ao produto ou marcar como 'produto removido'
+                // Para manter o histórico, geralmente se marca como 'removido' ou 'indisponível'.
+                // Aqui, vamos apenas garantir que a exibição de vendas não quebre se o produto for removido.
+
+                showMessage("Produto removido com sucesso!", "info");
+                renderizarProdutos();
+                renderizarEstoque(); // Atualiza a lista de estoque
+                carregarProdutosNaVenda(); // Atualiza a lista de produtos na aba de vendas
+                carregarProdutosNoEstoque(); // Atualiza a lista de produtos na aba de estoque
+                atualizarDashboard(); // Atualiza o dashboard caso o produto removido impacte nas vendas
+            }
+        }
+
+        function renderizarProdutos() {
+            const listaProdutosDiv = document.getElementById('lista-produtos');
+            listaProdutosDiv.innerHTML = '';
+
+            if (produtos.length === 0) {
+                listaProdutosDiv.innerHTML = '<p class="empty-state">Nenhum produto cadastrado ainda.</p>';
+                return;
+            }
+
+            produtos.forEach(produto => {
+                const produtoDiv = document.createElement('div');
+                produtoDiv.className = 'item';
+                produtoDiv.setAttribute('data-id', produto.id); // Adiciona o ID para fácil referência
+
+                produtoDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name-display">${produto.nome}</div>
+                        <div class="item-detail">Custo: <span class="item-cost-display">${formatCurrency(produto.precoCusto)}</span> | Venda: <span class="item-sale-display">${formatCurrency(produto.precoVenda)}</span></div>
+                        <div class="item-detail">Estoque Mínimo: <span class="item-min-stock-display">${produto.estoqueMinimo}</span></div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-secondary" style="padding: 8px 12px; font-size: 0.85rem;" onclick="editProduto(${produto.id})">✏️ Editar</button>
+                        <button class="btn-danger" style="padding: 8px 12px; font-size: 0.85rem;" onclick="removerProduto(${produto.id})">🗑️</button>
+                    </div>
+                `;
+                listaProdutosDiv.appendChild(produtoDiv);
+            });
+        }
+
+        function editProduto(id) {
+            const produtoDiv = document.querySelector(`.item[data-id="${id}"]`);
+            const produto = produtos.find(p => p.id === id);
+
+            if (!produtoDiv || !produto) return;
+
+            // Salva os valores originais para o caso de cancelamento
+            produtoDiv.setAttribute('data-original-name', produto.nome);
+            produtoDiv.setAttribute('data-original-cost', produto.precoCusto);
+            produtoDiv.setAttribute('data-original-sale', produto.precoVenda);
+            produtoDiv.setAttribute('data-original-min-stock', produto.estoqueMinimo);
+
+
+            produtoDiv.querySelector('.item-info').innerHTML = `
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.85rem;">Nome:</label>
+                    <input type="text" class="edit-produto-nome" value="${produto.nome}" placeholder="Nome do Produto">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.85rem;">Custo (R$):</label>
+                    <input type="number" class="edit-produto-custo" step="0.01" value="${produto.precoCusto}" placeholder="Custo">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.85rem;">Venda (R$):</label>
+                    <input type="number" class="edit-produto-venda" step="0.01" value="${produto.precoVenda}" placeholder="Venda">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="font-size: 0.85rem;">Estoque Mínimo:</label>
+                    <input type="number" class="edit-produto-min-stock" value="${produto.estoqueMinimo}" placeholder="Estoque Mínimo">
+                </div>
+            `;
+
+            const actionsDiv = produtoDiv.querySelector('.item-actions');
+            actionsDiv.innerHTML = `
+                <button class="btn" style="padding: 8px 12px; font-size: 0.85rem;" onclick="saveProduto(${id})">💾 Salvar</button>
+                <button class="btn-danger" style="padding: 8px 12px; font-size: 0.85rem;" onclick="cancelEditProduto(${id})">❌ Cancelar</button>
+            `;
+        }
+
+        function saveProduto(id) {
+            const produtoDiv = document.querySelector(`.item[data-id="${id}"]`);
+            const produto = produtos.find(p => p.id === id);
+
+            if (!produtoDiv || !produto) return;
+
+            const newName = produtoDiv.querySelector('.edit-produto-nome').value;
+            const newCost = parseFloat(produtoDiv.querySelector('.edit-produto-custo').value) || 0;
+            const newSale = parseFloat(produtoDiv.querySelector('.edit-produto-venda').value) || 0;
+            const newMinStock = parseInt(produtoDiv.querySelector('.edit-produto-min-stock').value) || 0;
+
+            if (!newName) {
+                showMessage("O nome do produto não pode ser vazio.", "error");
+                return;
+            }
+            if (newCost < 0 || newSale < 0 || newMinStock < 0) {
+                showMessage("Valores de custo, venda e estoque mínimo não podem ser negativos.", "error");
+                return;
+            }
+
+            produto.nome = newName;
+            produto.precoCusto = newCost;
+            produto.precoVenda = newSale;
+            produto.estoqueMinimo = newMinStock;
+
+            salvarDados('produtos', produtos);
+            showMessage("Produto atualizado com sucesso!", "success");
+            renderizarProdutos(); // Renderiza novamente para mostrar os dados atualizados
+            carregarProdutosNaVenda(); // Atualiza selects de venda
+            carregarProdutosNoEstoque(); // Atualiza selects de estoque
+            atualizarDashboard(); // Atualiza dashboard
+        }
+
+        function cancelEditProduto(id) {
+            const produtoDiv = document.querySelector(`.item[data-id="${id}"]`);
+            const produto = produtos.find(p => p.id === id);
+
+            if (!produtoDiv || !produto) return;
+
+            // Restaura os valores originais
+            produto.nome = produtoDiv.getAttribute('data-original-name');
+            produto.precoCusto = parseFloat(produtoDiv.getAttribute('data-original-cost'));
+            produto.precoVenda = parseFloat(produtoDiv.getAttribute('data-original-sale'));
+            produto.estoqueMinimo = parseInt(produtoDiv.getAttribute('data-original-min-stock'));
+
+            renderizarProdutos(); // Renderiza novamente para mostrar os dados originais
+            showMessage("Edição cancelada.", "info");
+        }
+
+        // --- Gerenciamento de Clientes ---
+        function adicionarCliente() {
+            const nome = document.getElementById('clienteNome').value;
+            const email = document.getElementById('clienteEmail').value;
+            const telefone = document.getElementById('clienteTelefone').value;
+
+            if (!nome) {
+                showMessage("Por favor, insira o nome do cliente.", "error");
+                return;
+            }
+
+            const newClient = {
+                id: Date.now(),
+                nome,
+                email,
+                telefone
+            };
+            clientes.push(newClient);
+            salvarDados('clientes', clientes);
+
+            showMessage("Cliente adicionado com sucesso!", "success");
+            renderizarClientes();
+            document.getElementById('clienteNome').value = '';
+            document.getElementById('clienteEmail').value = '';
+            document.getElementById('clienteTelefone').value = '';
+            carregarClientesNaVenda(); // Atualiza a lista de clientes na aba de vendas
+        }
+
+        function removerCliente(id) {
+            if (confirm("Tem certeza que deseja remover este cliente?")) {
+                // Verificar se o cliente tem vendas associadas
+                const hasSales = vendas.some(v => v.clienteId == id);
+                if (hasSales) {
+                    showMessage("Não é possível remover o cliente. Existem vendas associadas a ele.", "error");
+                    return;
+                }
+
+                clientes = clientes.filter(c => c.id !== id);
+                salvarDados('clientes', clientes);
+                showMessage("Cliente removido com sucesso!", "info");
+                renderizarClientes();
+                carregarClientesNaVenda(); // Atualiza a lista de clientes na aba de vendas
+                atualizarDashboard(); // Atualiza o dashboard caso o cliente removido impacte
+            }
+        }
+
+        function renderizarClientes() {
+            const listaClientesDiv = document.getElementById('lista-clientes');
+            listaClientesDiv.innerHTML = '';
+
+            if (clientes.length === 0) {
+                listaClientesDiv.innerHTML = '<p class="empty-state">Nenhum cliente cadastrado ainda.</p>';
+                return;
+            }
+
+            clientes.forEach(cliente => {
+                const clienteDiv = document.createElement('div');
+                clienteDiv.className = 'item';
+                clienteDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${cliente.nome}</div>
+                        <div class="item-detail">${cliente.email ? `Email: ${cliente.email}` : ''}</div>
+                        <div class="item-detail">${cliente.telefone ? `Tel: ${cliente.telefone}` : ''}</div>
+                    </div>
+                    <button class="btn-danger" onclick="removerCliente(${cliente.id})">🗑️</button>
+                `;
+                listaClientesDiv.appendChild(clienteDiv);
+            });
+        }
+
+        function carregarClientesNaVenda() {
+            const vendaClienteSelect = document.getElementById('vendaCliente');
+            const currentSelectedValue = vendaClienteSelect.value; // Salva a seleção atual
+            vendaClienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.id;
+                option.textContent = cliente.nome;
+                vendaClienteSelect.appendChild(option);
+            });
+            vendaClienteSelect.value = currentSelectedValue; // Restaura a seleção
+        }
+
+        // --- Gerenciamento de Vendas ---
+        let vendaProdutoCounter = 0; // Contador para IDs únicos dos campos de produto na venda
+
+        function addVendaProduto() {
+            const container = document.getElementById('vendaProdutosContainer');
+            const newIndex = vendaProdutoCounter++;
+
+            const productItemDiv = document.createElement('div');
+            productItemDiv.className = 'venda-produto-item';
+            productItemDiv.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;';
+            productItemDiv.innerHTML = `
+                <div class="form-group" style="flex: 2;">
+                    <label for="vendaProduto${newIndex}">Produto</label>
+                    <select id="vendaProduto${newIndex}" class="venda-produto-select" onchange="updateProductPrice(${newIndex})">
+                        <option value="">Selecione um produto</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="vendaQuantidade${newIndex}">Qtd</label>
+                    <input type="number" id="vendaQuantidade${newIndex}" class="venda-quantidade-input" placeholder="1" min="1" value="1">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Preço Unit.</label>
+                    <input type="text" id="vendaPrecoUnitario${newIndex}" class="venda-preco-unitario" readonly>
+                </div>
+                <button type="button" class="btn-danger" style="padding: 10px 15px; height: fit-content;" onclick="removeVendaProduto(this)">🗑️</button>
+            `;
+            container.appendChild(productItemDiv);
+            carregarProdutosNaVenda(newIndex); // Carrega os produtos para o novo select
+        }
+
+        function removeVendaProduto(button) {
+            const item = button.closest('.venda-produto-item');
+            item.remove();
+        }
+
+        function carregarProdutosNaVenda(index = null) {
+            // Se o index for null, é a primeira chamada, então carregar todos os selects existentes
+            // Caso contrário, carrega apenas o select com o índice fornecido.
+            const selects = index === null
+                ? document.querySelectorAll('.venda-produto-select')
+                : [document.getElementById(`vendaProduto${index}`)];
+
+            selects.forEach(selectElement => {
+                const currentSelectedValue = selectElement.value; // Mantém a seleção atual
+                selectElement.innerHTML = '<option value="">Selecione um produto</option>';
+                produtos.forEach(produto => {
+                    const option = document.createElement('option');
+                    option.value = produto.id;
+                    option.textContent = produto.nome;
+                    selectElement.appendChild(option);
+                });
+                selectElement.value = currentSelectedValue; // Restaura a seleção
+                // Garante que o preço unitário seja atualizado se um produto já estava selecionado
+                if (currentSelectedValue) {
+                    const idx = selectElement.id.replace('vendaProduto', '');
+                    updateProductPrice(idx);
+                }
+            });
+        }
+
+        function updateProductPrice(index) {
+            const selectElement = document.getElementById(`vendaProduto${index}`);
+            const precoUnitarioInput = document.getElementById(`vendaPrecoUnitario${index}`);
+            const selectedProductId = selectElement.value;
+
+            if (selectedProductId) {
+                const produto = produtos.find(p => p.id == selectedProductId);
+                if (produto) {
+                    precoUnitarioInput.value = formatCurrency(produto.precoVenda);
+                }
+            } else {
+                precoUnitarioInput.value = formatCurrency(0);
+            }
+        }
+
+        function registrarVenda() {
+            const clienteId = document.getElementById('vendaCliente').value;
+            const vendaData = document.getElementById('vendaData').value;
+            const produtosVendidos = [];
+            let totalVenda = 0;
+
+            if (!clienteId) {
+                showMessage("Por favor, selecione um cliente.", "error");
+                return;
+            }
+            if (!vendaData) {
+                showMessage("Por favor, selecione a data da venda.", "error");
+                return;
+            }
+
+            const productItems = document.querySelectorAll('#vendaProdutosContainer .venda-produto-item');
+            if (productItems.length === 0) {
+                showMessage("Adicione pelo menos um produto à venda.", "error");
+                return;
+            }
+
+            let hasError = false;
+            productItems.forEach(item => {
+                const productId = item.querySelector('.venda-produto-select').value;
+                const quantity = parseInt(item.querySelector('.venda-quantidade-input').value) || 0;
+
+                if (!productId) {
+                    showMessage("Por favor, selecione um produto para cada item da venda.", "error");
+                    hasError = true;
+                    return;
+                }
+                if (quantity <= 0) {
+                    showMessage("A quantidade do produto deve ser maior que zero.", "error");
+                    hasError = true;
+                    return;
+                }
+
+                const produto = produtos.find(p => p.id == productId);
+                if (!produto) {
+                    showMessage("Produto não encontrado.", "error");
+                    hasError = true;
+                    return;
+                }
+
+                // Verificar estoque antes de registrar a venda
+                if (estoque[productId] === undefined || estoque[productId] < quantity) {
+                    showMessage(`Estoque insuficiente para ${produto.nome}. Disponível: ${estoque[productId] || 0}`, "error");
+                    hasError = true;
+                    return;
+                }
+
+                produtosVendidos.push({
+                    produtoId: productId,
+                    nome: produto.nome,
+                    quantidade: quantity,
+                    precoUnitario: produto.precoVenda,
+                    custoUnitario: produto.precoCusto
+                });
+                totalVenda += (produto.precoVenda * quantity);
+            });
+
+            if (hasError) {
+                return; // Para a função se houver erro
+            }
+
+            const newSale = {
+                id: Date.now(),
+                clienteId,
+                clienteNome: clientes.find(c => c.id == clienteId).nome,
+                data: vendaData,
+                produtos: produtosVendidos,
+                total: totalVenda
+            };
+            vendas.push(newSale);
+            salvarDados('vendas', vendas);
+
+            // Atualizar estoque
+            produtosVendidos.forEach(item => {
+                estoque[item.produtoId] -= item.quantidade;
+            });
+            salvarDados('estoque', estoque);
+
+            showMessage("Venda registrada com sucesso!", "success");
+            renderizarVendas();
+            renderizarEstoque(); // Atualiza a visualização do estoque
+            atualizarDashboard(); // Atualiza o dashboard
+
+            // Limpar formulário de vendas
+            document.getElementById('vendaCliente').value = '';
+            document.getElementById('vendaData').value = '';
+            document.getElementById('vendaProdutosContainer').innerHTML = `
+                <div class="venda-produto-item" style="display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-end;">
+                    <div class="form-group" style="flex: 2;">
+                        <label for="vendaProduto0">Produto</label>
+                        <select id="vendaProduto0" class="venda-produto-select" onchange="updateProductPrice(0)">
+                            <option value="">Selecione um produto</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="vendaQuantidade0">Qtd</label>
+                        <input type="number" id="vendaQuantidade0" class="venda-quantidade-input" placeholder="1" min="1" value="1">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Preço Unit.</label>
+                        <input type="text" id="vendaPrecoUnitario0" class="venda-preco-unitario" readonly>
+                    </div>
+                    <button type="button" class="btn-danger" style="padding: 10px 15px; height: fit-content;" onclick="removeVendaProduto(this)">🗑️</button>
+                </div>
+            `;
+            vendaProdutoCounter = 1; // Reseta o contador para o próximo conjunto de campos
+            carregarProdutosNaVenda(0); // Recarrega os produtos para o primeiro campo
+        }
+
+        function removerVenda(id) {
+            if (confirm("Tem certeza que deseja remover esta venda? O estoque será reposto.")) {
+                const vendaRemovida = vendas.find(v => v.id === id);
+                if (vendaRemovida) {
+                    // Repor estoque
+                    vendaRemovida.produtos.forEach(item => {
+                        estoque[item.produtoId] = (estoque[item.produtoId] || 0) + item.quantidade;
+                    });
+                    salvarDados('estoque', estoque);
+                }
+
+                vendas = vendas.filter(v => v.id !== id);
+                salvarDados('vendas', vendas);
+                showMessage("Venda removida com sucesso! Estoque atualizado.", "info");
+                renderizarVendas();
+                renderizarEstoque();
+                atualizarDashboard();
+            }
+        }
+
+        function renderizarVendas() {
+            const listaVendasDiv = document.getElementById('lista-vendas');
+            listaVendasDiv.innerHTML = '';
+
+            if (vendas.length === 0) {
+                listaVendasDiv.innerHTML = '<p class="empty-state">Nenhuma venda registrada ainda.</p>';
+                return;
+            }
+
+            vendas.sort((a, b) => new Date(b.data) - new Date(a.data)).forEach(venda => {
+                const vendaDiv = document.createElement('div');
+                vendaDiv.className = 'item';
+                const produtosList = venda.produtos.map(p => `${p.quantidade}x ${p.nome} (${formatCurrency(p.precoUnitario)})`).join(', ');
+
+                vendaDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">Venda para: ${venda.clienteNome}</div>
+                        <div class="item-detail">Data: ${new Date(venda.data).toLocaleDateString('pt-BR')}</div>
+                        <div class="item-detail">Total: ${formatCurrency(venda.total)}</div>
+                        <div class="item-detail">Produtos: ${produtosList}</div>
+                    </div>
+                    <button class="btn-danger" onclick="removerVenda(${venda.id})">🗑️</button>
+                `;
+                listaVendasDiv.appendChild(vendaDiv);
+            });
+        }
+
+        // --- Gerenciamento de Estoque ---
+        function carregarProdutosNoEstoque() {
+            const estoqueProdutoSelect = document.getElementById('estoqueProduto');
+            const currentSelectedValue = estoqueProdutoSelect.value; // Salva a seleção atual
+            estoqueProdutoSelect.innerHTML = '<option value="">Selecione um produto</option>';
+            produtos.forEach(produto => {
+                const option = document.createElement('option');
+                option.value = produto.id;
+                option.textContent = produto.nome;
+                estoqueProdutoSelect.appendChild(option);
+            });
+            estoqueProdutoSelect.value = currentSelectedValue; // Restaura a seleção
+            displayCurrentStock(); // Atualiza o estoque atual quando a seleção muda ou a página carrega
+        }
+
+        function displayCurrentStock() {
+            const estoqueProdutoId = document.getElementById('estoqueProduto').value;
+            const estoqueAtualInput = document.getElementById('estoqueAtual');
+            if (estoqueProdutoId) {
+                estoqueAtualInput.value = estoque[estoqueProdutoId] !== undefined ? estoque[estoqueProdutoId] : 0;
+            } else {
+                estoqueAtualInput.value = '';
+            }
+        }
+
+        function ajustarEstoque() {
+            const produtoId = document.getElementById('estoqueProduto').value;
+            const ajuste = parseInt(document.getElementById('ajusteEstoque').value);
+
+            if (!produtoId) {
+                showMessage("Por favor, selecione um produto para ajustar o estoque.", "error");
+                return;
+            }
+            if (isNaN(ajuste)) {
+                showMessage("Por favor, insira um valor numérico para o ajuste.", "error");
+                return;
+            }
+
+            estoque[produtoId] = (estoque[produtoId] || 0) + ajuste;
+            if (estoque[produtoId] < 0) { // Não permite estoque negativo
+                estoque[produtoId] = 0;
+                showMessage("Estoque não pode ser negativo. Ajustado para 0.", "error");
+            } else {
+                showMessage("Estoque ajustado com sucesso!", "success");
+            }
+            salvarDados('estoque', estoque);
+            displayCurrentStock();
+            renderizarEstoque();
+        }
+
+        function renderizarEstoque() {
+            const listaAlertasDiv = document.getElementById('estoque-alertas');
+            const listaCompletaDiv = document.getElementById('lista-estoque-completa');
+            listaAlertasDiv.innerHTML = '';
+            listaCompletaDiv.innerHTML = '';
+
+            const produtosComEstoque = produtos.filter(p => estoque[p.id] !== undefined);
+
+            if (produtosComEstoque.length === 0) {
+                listaCompletaDiv.innerHTML = '<p class="empty-state">Nenhum produto no estoque ainda.</p>';
+                listaAlertasDiv.innerHTML = '<p class="empty-state">Nenhum alerta de estoque. Tudo certo!</p>';
+                return;
+            }
+
+            let alertasExistentes = false;
+            produtosComEstoque.forEach(produto => {
+                const qtdEstoque = estoque[produto.id] || 0;
+                const produtoEstoqueDiv = document.createElement('div');
+                produtoEstoqueDiv.className = 'item';
+                produtoEstoqueDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${produto.nome}</div>
+                        <div class="item-detail">Estoque Atual: ${qtdEstoque}</div>
+                        <div class="item-detail">Estoque Mínimo: ${produto.estoqueMinimo}</div>
+                    </div>
+                `;
+                listaCompletaDiv.appendChild(produtoEstoqueDiv);
+
+                if (qtdEstoque <= produto.estoqueMinimo) {
+                    alertasExistentes = true;
+                    const alertaDiv = document.createElement('div');
+                    alertaDiv.className = 'item'
+                    alertaDiv.style.borderLeftColor = '#F44336'; // Cor de alerta
+                    alertaDiv.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-name">⚠️ Baixo Estoque: ${produto.nome}</div>
+                            <div class="item-detail">Atual: ${qtdEstoque} (Mínimo: ${produto.estoqueMinimo})</div>
+                        </div>
+                    `;
+                    listaAlertasDiv.appendChild(alertaDiv);
+                }
+            });
+
+            if (!alertasExistentes) {
+                listaAlertasDiv.innerHTML = '<p class="empty-state">Nenhum alerta de estoque. Tudo certo!</p>';
+            }
+        }
+
+        // --- Dashboard ---
+        function atualizarDashboard() {
+            let totalFaturamento = 0;
+            let totalCustoProdutosVendidos = 0;
+            let totalImpostosCalculados = 0;
+            let totalComissoesCalculadas = 0;
+
+            const productionData = carregarDados('productionData');
+            const impostosPercent = productionData.impostos || 0;
+            const comissaoVendaPercent = productionData.comissaoVenda || 0;
+            const salarioDesejadoMensal = productionData.salarioDesejado || 0;
+
+            vendas.forEach(venda => {
+                const vendaDate = new Date(venda.data);
+                const startDate = document.getElementById('dashboardStartDate').value;
+                const endDate = document.getElementById('dashboardEndDate').value;
+
+                // Filtrar por data se os campos estiverem preenchidos
+                if ((!startDate || vendaDate >= new Date(startDate)) && (!endDate || vendaDate <= new Date(endDate))) {
+                    totalFaturamento += venda.total;
+                    venda.produtos.forEach(item => {
+                        totalCustoProdutosVendidos += (item.custoUnitario * item.quantidade);
+                        // Como impostos e comissões são sobre o preço de venda, calculamos por item
+                        totalImpostosCalculados += (item.precoUnitario * item.quantidade) * (impostosPercent / 100);
+                        totalComissoesCalculadas += (item.precoUnitario * item.quantidade) * (comissaoVendaPercent / 100);
+                    });
+                }
+            });
+
+            const totalCustosFixos = custosFixos.reduce((sum, cost) => sum + cost.value, 0);
+
+            // Lucro Bruto: Faturamento Total - Custo dos Produtos Vendidos
+            const totalLucroBruto = totalFaturamento - totalCustoProdutosVendidos;
+
+            // Lucro Líquido Estimado: Lucro Bruto - Custos Fixos - Impostos - Comissões - Salário
+            const lucroLiquidoTotal = totalLucroBruto - totalCustosFixos - totalImpostosCalculados - totalComissoesCalculadas - salarioDesejadoMensal;
+
+
+            document.getElementById('totalFaturamento').textContent = formatCurrency(totalFaturamento);
+            document.getElementById('totalLucroBruto').textContent = formatCurrency(totalLucroBruto);
+            document.getElementById('totalCustosFixos').textContent = formatCurrency(totalCustosFixos);
+            document.getElementById('totalImpostos').textContent = formatCurrency(totalImpostosCalculados);
+            document.getElementById('totalComissoes').textContent = formatCurrency(totalComissoesCalculadas);
+            document.getElementById('lucroLiquidoTotal').textContent = formatCurrency(lucroLiquidoTotal);
+
+            // Atualizar Gráfico de Vendas
+            renderSalesChart();
+        }
+
+        function renderSalesChart() {
+            const salesData = {}; // { 'YYYY-MM-DD': totalVenda }
+            const startDate = document.getElementById('dashboardStartDate').value;
+            const endDate = document.getElementById('dashboardEndDate').value;
+
+            vendas.forEach(venda => {
+                const saleDate = venda.data;
+                // Filtrar por data se os campos estiverem preenchidos
+                if ((!startDate || saleDate >= startDate) && (!endDate || saleDate <= endDate)) {
+                    salesData[saleDate] = (salesData[saleDate] || 0) + venda.total;
+                }
+            });
+
+            const labels = Object.keys(salesData).sort();
+            const data = labels.map(label => salesData[label]);
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+
+            if (salesChart) {
+                salesChart.destroy(); // Destrói a instância anterior do gráfico
+            }
+
+            salesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Faturamento por Dia (R$)',
+                        data: data,
+                        backgroundColor: 'rgba(0, 121, 107, 0.7)',
+                        borderColor: 'rgba(0, 121, 107, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                },
+                                color: 'var(--color-text-dark)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'var(--color-text-dark)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'var(--color-text-dark)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // --- Configurações ---
+        async function saveUserSettings() {
+            if (!currentUser) return;
+
+            currentUser.name = document.getElementById('configUserName').value;
+
+            const logoFile = document.getElementById('configUserLogoFile').files[0];
+
+            let logoPromise = Promise.resolve(currentUser.logo);
+            if (logoFile) {
+                logoPromise = new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => resolve(event.target.result);
+                    reader.onerror = (error) => reject(error);
+                    reader.readAsDataURL(logoFile);
+                });
+            } else if (document.getElementById('configUserLogoFile').value === '') {
+                // Se o campo de arquivo foi limpo, remove o logo
+                logoPromise = Promise.resolve('');
+            }
+
+            try {
+                currentUser.logo = await logoPromise;
+                // currentUser.backgroundImage foi removido
+
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                users = users.map(u => u.email === currentUser.email ? currentUser : u);
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                showMessage("Configurações salvas com sucesso!", "success");
+                loadUserData(); // Recarrega os dados do usuário para atualizar o cabeçalho e o fundo
+            } catch (error) {
+                console.error("Erro ao salvar configurações:", error);
+                showMessage("Erro ao salvar configurações. Verifique os arquivos de imagem.", "error");
+            }
+        }
+
+        function loadUserSettings() {
+            if (!currentUser) return;
+            document.getElementById('configUserName').value = currentUser.name || '';
+            document.getElementById('configUserEmail').value = currentUser.email || '';
+            document.getElementById('configUserLogoFile').value = ''; // Limpa o input file
+            // document.getElementById('configBackgroundImageFile').value = ''; // Removido
+        }
+
+        function exportDataToXLSX() {
+            if (!currentUser) {
+                showMessage("Faça login para exportar dados.", "error");
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            // Exportar Produtos
+            const ws_produtos = XLSX.utils.json_to_sheet(produtos);
+            XLSX.utils.book_append_sheet(wb, ws_produtos, "Produtos");
+
+            // Exportar Clientes
+            const ws_clientes = XLSX.utils.json_to_sheet(clientes);
+            XLSX.utils.book_append_sheet(wb, ws_clientes, "Clientes");
+
+            // Exportar Vendas (simplificado para XLSX - pode ser necessário ajustar a estrutura para melhor visualização)
+            const vendasFormatadas = vendas.map(v => ({
+                ID_Venda: v.id,
+                Data: v.data,
+                Cliente: v.clienteNome,
+                Total: v.total,
+                Itens: v.produtos.map(p => `${p.nome} (${p.quantidade}x)`).join('; ')
+            }));
+            const ws_vendas = XLSX.utils.json_to_sheet(vendasFormatadas);
+            XLSX.utils.book_append_sheet(wb, ws_vendas, "Vendas");
+
+            // Exportar Custos Fixos
+            const ws_custosFixos = XLSX.utils.json_to_sheet(custosFixos);
+            XLSX.utils.book_append_sheet(wb, ws_custosFixos, "Custos Fixos");
+
+            // Exportar Custos Variáveis
+            const ws_custosVariaveis = XLSX.utils.json_to_sheet(custosVariaveis);
+            XLSX.utils.book_append_sheet(wb, ws_custosVariaveis, "Custos Variáveis");
+
+            // Exportar Estoque (pode ser um desafio direto, então vamos formatar)
+            const estoqueFormatado = Object.keys(estoque).map(productId => {
+                const produto = produtos.find(p => p.id == productId);
+                return {
+                    'ID Produto': productId,
+                    'Nome Produto': produto ? produto.nome : 'Produto Desconhecido',
+                    'Quantidade em Estoque': estoque[productId]
+                };
+            });
+            const ws_estoque = XLSX.utils.json_to_sheet(estoqueFormatado);
+            XLSX.utils.book_append_sheet(wb, ws_estoque, "Estoque");
+
+            // Exportar Dados de Produção (como uma única linha ou objeto)
+            const productionData = carregarDados('productionData');
+            const ws_productionData = XLSX.utils.json_to_sheet([productionData]);
+            XLSX.utils.book_append_sheet(wb, ws_productionData, "Dados Produção");
+
+
+            XLSX.writeFile(wb, `${currentUser.email}_meu_trampo_empreender_data.xlsx`);
+            showMessage("Dados exportados para XLSX com sucesso!", "success");
+        }
+
+        function importDataFromXLSX() {
+            const fileInput = document.getElementById('importFileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showMessage("Por favor, selecione um arquivo XLSX para importar.", "error");
+                return;
+            }
+
+            if (!currentUser) {
+                showMessage("Faça login para importar dados.", "error");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    const importedData = {};
+
+                    // Importar Produtos
+                    if (workbook.SheetNames.includes("Produtos")) {
+                        const sheet = workbook.Sheets["Produtos"];
+                        importedData.produtos = XLSX.utils.sheet_to_json(sheet);
+                    }
+
+                    // Importar Clientes
+                    if (workbook.SheetNames.includes("Clientes")) {
+                        const sheet = workbook.Sheets["Clientes"];
+                        importedData.clientes = XLSX.utils.sheet_to_json(sheet);
+                    }
+
+                    // Importar Vendas (requer parsing de volta para a estrutura original)
+                    if (workbook.SheetNames.includes("Vendas")) {
+                        const sheet = workbook.Sheets["Vendas"];
+                        const rawVendas = XLSX.utils.sheet_to_json(sheet);
+                        importedData.vendas = rawVendas.map(row => {
+                            const produtosArray = row.Itens.split('; ').map(itemStr => {
+                                const match = itemStr.match(/(.*) \((\d+)x\)/);
+                                if (match) {
+                                    const nome = match[1].trim();
+                                    const quantity = parseInt(match[2]);
+                                    // Tentar encontrar o produto original para obter ID, precoUnitario e custoUnitario
+                                    const produtoOriginal = produtos.find(p => p.nome === nome) || importedData.produtos.find(p => p.nome === nome);
+                                    return {
+                                        produtoId: produtoOriginal ? produtoOriginal.id : null,
+                                        nome: nome,
+                                        quantidade: quantity,
+                                        precoUnitario: produtoOriginal ? produtoOriginal.precoVenda : 0,
+                                        custoUnitario: produtoOriginal ? produtoOriginal.precoCusto : 0
+                                    };
+                                }
+                                return null;
+                            }).filter(item => item !== null);
+
+                            return {
+                                id: row.ID_Venda,
+                                clienteId: clientes.find(c => c.nome === row.Cliente)?.id || null, // Tenta encontrar o ID do cliente
+                                clienteNome: row.Cliente,
+                                data: row.Data,
+                                produtos: produtosArray,
+                                total: row.Total
+                            };
+                        });
+                    }
+
+                    // Importar Custos Fixos
+                    if (workbook.SheetNames.includes("Custos Fixos")) {
+                        const sheet = workbook.Sheets["Custos Fixos"];
+                        importedData.custosFixos = XLSX.utils.sheet_to_json(sheet);
+                    }
+
+                    // Importar Custos Variáveis
+                    if (workbook.SheetNames.includes("Custos Variáveis")) {
+                        const sheet = workbook.Sheets["Custos Variáveis"];
+                        importedData.custosVariaveis = XLSX.utils.sheet_to_json(sheet);
+                    }
+
+                    // Importar Estoque
+                    if (workbook.SheetNames.includes("Estoque")) {
+                        const sheet = workbook.Sheets["Estoque"];
+                        const rawEstoque = XLSX.utils.sheet_to_json(sheet);
+                        importedData.estoque = {};
+                        rawEstoque.forEach(item => {
+                            importedData.estoque[item['ID Produto']] = item['Quantidade em Estoque'];
+                        });
+                    }
+
+                    // Importar Dados de Produção
+                    if (workbook.SheetNames.includes("Dados Produção")) {
+                        const sheet = workbook.Sheets["Dados Produção"];
+                        const rawProductionData = XLSX.utils.sheet_to_json(sheet);
+                        importedData.productionData = rawProductionData[0] || {}; // Pega o primeiro objeto
+                    }
+
+
+                    if (confirm("Importar dados sobrescreverá seus dados atuais. Deseja continuar?")) {
+                        salvarDados('vendas', importedData.vendas || []);
+                        salvarDados('produtos', importedData.produtos || []);
+                        salvarDados('clientes', importedData.clientes || []);
+                        salvarDados('custosFixos', importedData.custosFixos || []);
+                        salvarDados('custosVariaveis', importedData.custosVariaveis || []);
+                        salvarDados('estoque', importedData.estoque || {});
+                        salvarDados('productionData', importedData.productionData || {});
+
+                        // Atualizar os dados do usuário logado se houver no arquivo importado
+                        // (Não estamos exportando o objeto currentUser completo no XLSX por questões de simplicidade,
+                        // mas se o usuário quiser, pode ser adicionado uma aba para isso)
+                        // Por enquanto, o logo e background são tratados tratados separadamente.
+                        // Se o usuário quiser manter o logo e background do arquivo importado, ele terá que re-upload.
+
+                        showMessage("Dados importados com sucesso! A aplicação será recarregada.", "success");
+                        loadUserData(); // Recarrega todos os dados na UI
+                        showTab('dashboard');
+                    }
+
+                } catch (e) {
+                    showMessage("Erro ao processar o arquivo. Certifique-se de que é um XLSX válido.", "error");
+                    console.error("Erro na importação:", e);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+
+        // --- Inicialização ---
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLoginStatus(); // Verifica se há um usuário logado
+            setupProductionCalculation(); // Configura o cálculo de produção
+            // A chamada inicial de addVendaProduto() deve ocorrer apenas quando a aba de vendas for ativada pela primeira vez ou se não houver vendas.
+            // A função carregarProdutosNaVenda(0) é chamada dentro de showTab('vendas')
+        });
+    </script>
+</body>
+</html>
