@@ -331,6 +331,12 @@
             padding-left: 45px;
         }
 
+/* Ajuste global para ícones em <select> */
+.input-with-icon select {
+    padding-left: 55px;
+}
+
+
         .input-icon {
             position: absolute;
             left: 15px;
@@ -727,6 +733,7 @@
 
         /* Responsividade */
         
+
 @media (max-width: 768px) {
     .container {
         padding: 15px;
@@ -827,12 +834,129 @@
         font-size: 0.85rem;
     }
 
+    /* Ajuste para ícones em campos de input/select no mobile */
+    .input-with-icon input,
+    .input-with-icon select {
+        padding-left: 60px;
+        padding-right: 20px;
+        min-height: 48px;
+    }
+
+    .input-icon {
+        left: 18px;
+        font-size: 1.2rem;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+}
+.header h1 {
+        font-size: 2.8rem;
+    }
+
+    .header p {
+        font-size: 1rem;
+    }
+
+    .nav-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 15px;
+        -webkit-overflow-scrolling: touch; /* Melhora o scroll em iOS */
+    }
+
+    .tab-btn {
+        white-space: nowrap;
+        min-width: fit-content;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
+    .card {
+        padding: 25px;
+        border-radius: 20px;
+    }
+
+    .card h2 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .form-section {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .form-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .btn {
+        padding: 14px 25px;
+        font-size: 0.95rem;
+        width: auto; /* Permite que os botões se ajustem melhor em telas pequenas */
+    }
+
+    .result-price {
+        font-size: 2.5rem;
+    }
+
+    .result-subtitle {
+        font-size: 1rem;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .item-info {
+        margin-bottom: 10px;
+    }
+
+    .item-name {
+        font-size: 1rem;
+    }
+
+    .item-detail {
+        font-size: 0.85rem;
+    }
+
     /* Ajuste para ícones em campos de input no mobile */
     .input-with-icon input {
         padding-left: 60px;
         padding-right: 20px;
         min-height: 48px;
     }
+
+/* Ajuste global para ícones em <select> */
+.input-with-icon select {
+    padding-left: 55px;
+}
+
 
     .input-icon {
         left: 18px;
@@ -939,6 +1063,12 @@
             .input-with-icon input {
                 padding-left: 55px; /* Aumenta o padding para evitar sobreposição */
             }
+
+/* Ajuste global para ícones em <select> */
+.input-with-icon select {
+    padding-left: 55px;
+}
+
 
             .input-icon {
                 left: 20px; /* Ajusta a posição do ícone para centralizar com o novo padding */
